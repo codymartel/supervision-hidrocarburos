@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Supervisión Hidrocarburos – Registros</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg:      #080d14;
+      --surface: #0e1623;
+      --surface2: #131f30;
+      --border:  #1e2d42;
+      --accent:  #0ea5e9;
+      --text:    #e2e8f0;
+      --muted:   #64748b;
+      --green:   #22d3a5;
+      --red:     #f43f5e;
+      --yellow:  #fbbf24;
+      --font:    'IBM Plex Sans', sans-serif;
+      --mono:    'IBM Plex Mono', monospace;
+    }
+    body {
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* ── Header ── */
+    header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 14px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    .brand {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--accent);
+      letter-spacing: 3px;
+      text-transform: uppercase;
+    }
+    .header-title { font-size: 16px; font-weight: 600; margin-top: 2px; }
+    #btn-logout {
+      padding: 7px 14px;
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--muted);
+      font-family: var(--font);
+      font-size: 13px;
+      cursor: pointer;
+      transition: border-color .2s, color .2s;
+    }
+    #btn-logout:hover { border-color: var(--red); color: var(--red); }
+
+    /* ── Layout ── */
+    .container { max-width: 1100px; margin: auto; padding: 28px 20px; }
+
+    /* ── Status ── */
+    #status {
+      margin-bottom: 16px;
+      font-size: 13px;
+      font-weight: 500;
+      min-height: 20px;
+    }
+    .status-ok      { color: var(--green); }
+    .status-error   { color: var(--red); }
+    .status-loading { color: var(--yellow); }
+
+    /* ── Sección formulario ── */
+    #formulario-section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 28px;
+      margin-bottom: 32px;
+    }
+    #titulo-form {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 20px;
+      color: var(--accent);
+    }
+
+    /* Grid de campos */
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
+    .span-2 { grid-column: span 2; }
+    .span-3 { grid-column: span 3; }
+
+    .field { display: flex; flex-direction: column; gap: 6px; }
+    label  {
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    input, select, textarea {
+      padding: 10px 12px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 7px;
+      color: var(--text);
+      font-family: var(--font);
+      font-size: 13px;
+      outline: none;
+      transition: border-color .2s;
+    }
+    input:focus, select:focus, textarea:focus { border-color: var(--accent); }
+    select option { background: var(--surface2); }
+    textarea { resize: vertical; min-height: 64px; }
+
+    /* Separador de sección */
+    .section-sep {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--muted);
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 6px;
+      margin: 20px 0 14px;
+    }
+
+    /* Botones del form */
+    .form-actions { display: flex; gap: 10px; margin-top: 20px; }
+    .btn-primary {
+      padding: 11px 24px;
+      background: var(--accent);
+      border: none;
+      border-radius: 8px;
+      color: #fff;
+      font-family: var(--font);
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity .2s;
+    }
+    .btn-primary:hover    { opacity: .88; }
+    .btn-primary:disabled { opacity: .45; cursor: not-allowed; }
+    .btn-secondary {
+      padding: 11px 20px;
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--muted);
+      font-family: var(--font);
+      font-size: 14px;
+      cursor: pointer;
+      transition: border-color .2s;
+      display: none;
+    }
+    .btn-secondary:hover { border-color: var(--muted); }
+
+    /* ── Lista de registros ── */
+    #lista-section h2 {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 16px;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      margin-bottom: 14px;
+      overflow: hidden;
+      transition: border-color .2s;
+    }
+    .card:hover { border-color: #2a3f5e; }
+    .card-header {
+      background: var(--surface2);
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border-bottom: 1px solid var(--border);
+    }
+    .badge {
+      background: #0ea5e920;
+      color: var(--accent);
+      border: 1px solid #0ea5e940;
+      border-radius: 5px;
+      padding: 3px 10px;
+      font-size: 12px;
+      font-weight: 600;
+      font-family: var(--mono);
+    }
+    .badge-sub {
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .card-body {
+      padding: 14px 16px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5px 20px;
+    }
+    .card-body p { font-size: 13px; color: var(--text); }
+    .card-body strong { color: var(--muted); font-weight: 500; }
+    .card-actions {
+      padding: 10px 16px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      gap: 8px;
+    }
+    .btn-edit {
+      padding: 6px 14px;
+      background: transparent;
+      border: 1px solid #2a4a6b;
+      border-radius: 6px;
+      color: var(--accent);
+      font-size: 12px;
+      cursor: pointer;
+      transition: background .2s;
+    }
+    .btn-edit:hover { background: #0ea5e915; }
+    .btn-delete {
+      padding: 6px 14px;
+      background: transparent;
+      border: 1px solid #4b1f2a;
+      border-radius: 6px;
+      color: var(--red);
+      font-size: 12px;
+      cursor: pointer;
+      transition: background .2s;
+    }
+    .btn-delete:hover { background: #f43f5e15; }
+
+    @media (max-width: 700px) {
+      .grid-2, .grid-3 { grid-template-columns: 1fr; }
+      .span-2, .span-3 { grid-column: span 1; }
+      .card-body { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div>
+    <div class="brand">Osinergmin</div>
+    <div class="header-title">Supervisión de Hidrocarburos</div>
+  </div>
+  <button id="btn-logout">Cerrar sesión</button>
+</header>
+
+<div class="container">
+  <div id="status"></div>
+
+  <!-- ── FORMULARIO ── -->
+  <section id="formulario-section">
+    <div id="titulo-form">➕ Nuevo Registro</div>
+
+    <form id="form-registro">
+
+      <div class="section-sep">Acción</div>
+      <div class="grid-3">
+        <div class="field">
+          <label>Acción</label>
+          <select id="accion" required>
+            <option value="">-- Seleccionar --</option>
+            <option>23 Preoperativa y denuncias</option>
+            <option>24 Comercialización</option>
+            <option>25 Instalaciones</option>
+            <option>26 Calidad y cantidad</option>
+            <option>28 Medios de Transporte</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Acción Específica</label>
+          <input id="accionEspecifica" placeholder="23.1 Otorgamiento RH..." required>
+        </div>
+        <div class="field">
+          <label>Sub Acción Específica</label>
+          <input id="subAccionEspecifica" placeholder="Modificación de Registro" required>
+        </div>
+      </div>
+
+      <div class="section-sep">Agente y Actividad</div>
+      <div class="grid-2">
+        <div class="field">
+          <label>Tipo de Agente</label>
+          <input id="tipoAgente" placeholder="EVP combustibles de uso automotor" required>
+        </div>
+        <div class="field">
+          <label>Actividad</label>
+          <input id="actividad" placeholder="Estación de servicios / Grifos" required>
+        </div>
+      </div>
+
+      <div class="section-sep">Ubicación</div>
+      <div class="grid-2">
+        <div class="field">
+          <label>Provincia</label>
+          <input id="provincia" placeholder="01 Huánuco" required>
+        </div>
+        <div class="field">
+          <label>Distrito</label>
+          <input id="distrito" placeholder="02 Amarilis" required>
+        </div>
+      </div>
+
+      <div class="section-sep">Ejecución</div>
+      <div class="grid-3">
+        <div class="field">
+          <label>Tipo de Transporte</label>
+          <select id="tipoTransporte" required>
+            <option value="">-- Seleccionar --</option>
+            <option>Gabinete</option>
+            <option>Terrestre</option>
+            <option>Fluvial</option>
+            <option>Aéreo</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>N° de Supervisores</label>
+          <input id="numSupervisores" type="number" min="1" placeholder="1" required>
+        </div>
+        <div class="field">
+          <label>Empresa Supervisora</label>
+          <input id="empresaSupervisora" placeholder="EVALUACION Y SUPERVISION..." required>
+        </div>
+      </div>
+
+      <div class="section-sep">Expediente</div>
+      <div class="grid-3">
+        <div class="field">
+          <label>N° Expediente SIGED</label>
+          <input id="nroExpediente" placeholder="202600032265" required>
+        </div>
+        <div class="field">
+          <label>Carta Línea</label>
+          <input id="cartaLinea" placeholder="1264272-1" required>
+        </div>
+        <div class="field">
+          <label>Contrato</label>
+          <input id="contrato" placeholder="SUP2600049" required>
+        </div>
+      </div>
+
+      <div class="section-sep">Supervisor y Calidad</div>
+      <div class="grid-3">
+        <div class="field">
+          <label>Supervisor</label>
+          <input id="supervisor" placeholder="ING DARWIN UZURIAGA CLAUDIO" required>
+        </div>
+        <div class="field">
+          <label>Calidad del Entregable</label>
+          <select id="calidadEntregable" required>
+            <option value="">-- Seleccionar --</option>
+            <option>Buena</option>
+            <option>Regular</option>
+            <option>Mala</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Detalle Calidad</label>
+          <select id="detalleCalidad" required>
+            <option value="">-- Seleccionar --</option>
+            <option>Sin errores de forma y fondo</option>
+            <option>Con error de forma</option>
+            <option>Con error de fondo</option>
+            <option>Con errores de forma y fondo</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="grid-2" style="margin-top:14px">
+        <div class="field">
+          <label>Cumplimiento de Plazos</label>
+          <select id="cumplimientoPlazos" required>
+            <option value="">-- Seleccionar --</option>
+            <option>Cumple con los plazos</option>
+            <option>No cumple con los plazos</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Observaciones</label>
+          <textarea id="observaciones" placeholder="Para futuras mejoras..."></textarea>
+        </div>
+      </div>
+
+    </form>
+
+    <div class="form-actions">
+      <button class="btn-primary" id="btn-guardar">💾 Guardar</button>
+      <button class="btn-secondary" id="btn-cancelar">✕ Cancelar</button>
+    </div>
+  </section>
+
+  <!-- ── LISTA ── -->
+  <section id="lista-section">
+    <h2>📋 Registros en Firestore</h2>
+    <div id="lista"><p>⏳ Cargando...</p></div>
+  </section>
+</div>
+
+<script type="module" src="app.js"></script>
+</body>
+</html>

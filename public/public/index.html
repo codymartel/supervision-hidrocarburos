@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Sistema Seguro</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="container">
+
+  <h1>📊 Registro Seguro</h1>
+
+  <div class="box">
+    <h2>Acción</h2>
+    <div class="grid">
+      <input id="NOMBRE_ABREVIADO" placeholder="Nombre Abreviado">
+      <input id="NOMBRE_ACCION" placeholder="Nombre Acción">
+      <input id="CODIGO_A_E" placeholder="Código">
+    </div>
+  </div>
+
+  <div class="box">
+    <h2>Actividad</h2>
+    <div class="grid">
+      <input id="NOMBRE_ACTIVIDAD" placeholder="Nombre">
+      <input id="CODIGO_ACTIVIDAD" placeholder="Código">
+    </div>
+  </div>
+
+  <div class="box">
+    <h2>Ubicación</h2>
+    <div class="grid">
+      <input id="NOMBRE_PROVINCIA" placeholder="Provincia">
+      <input id="NOMBRE_DISTRITO" placeholder="Distrito">
+    </div>
+  </div>
+
+  <div class="box">
+    <h2>Registro</h2>
+    <div class="grid">
+      <input id="NUM_SUPERVISORES" placeholder="Supervisores">
+      <input id="EMPRESA_SUPERVISORA" placeholder="Empresa">
+      <input id="CALIDAD_ENTREGABLE" placeholder="Calidad">
+      <input id="NRO_EXPEDIENTE" placeholder="Expediente">
+      <input id="CARTA_LINEA" placeholder="Carta">
+      <input id="OBSERVACIONES" placeholder="Observaciones">
+      <input id="CONTRATO" placeholder="Contrato">
+    </div>
+  </div>
+
+  <div class="save-box">
+    <button id="guardar">💾 Guardar</button>
+    <div id="status"></div>
+  </div>
+
+  <h2>📥 Datos</h2>
+  <div id="lista"></div>
+
+</div>
+
+<script type="module" src="app.js"></script>
+</body>
+</html>

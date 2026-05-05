@@ -1,0 +1,63 @@
+body {
+  margin: 0;
+  font-family: Arial;
+  background: #0f172a;
+  color: white;
+}
+
+.container {
+  max-width: 1000px;
+  margin: auto;
+  padding: 20px;
+}
+
+h1 {
+  text-align: center;
+  color: #38bdf8;
+}
+
+.box {
+  background: #1e293b;
+  padding: 15px;
+  margin-bottom: 15px;
+  border-radius: 10px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+input {
+  padding: 10px;
+  border-radius: 6px;
+  border: none;
+  background: #334155;
+  color: white;
+}
+
+.save-box {
+  text-align: center;
+  margin-top: 20px;
+}
+
+button {
+  padding: 12px 20px;
+  background: #22c55e;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+#status {
+  margin-top: 10px;
+  font-weight: bold;
+}
+
+.card {
+  background: #1e293b;
+  padding: 10px;
+  margin-top: 10px;
+  border-radius: 8px;
+}
